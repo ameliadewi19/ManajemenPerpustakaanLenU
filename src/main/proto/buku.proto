@@ -6,7 +6,7 @@ package com.perpustakaan.proto;
 
 service BukuService {
     rpc GetAllBuku(Empty) returns (BukuList);
-    rpc CreateBuku (Buku) returns (Buku);
+    rpc CreateBuku (CreateBukuRequest) returns (Buku);
     rpc GetBukuById (BukuIdRequest) returns (Buku);
     rpc UpdateBuku (Buku) returns (Buku);
     rpc DeleteBuku (BukuIdRequest) returns (Empty);
@@ -20,14 +20,21 @@ message Buku {
     string tempatPenyimpanan = 5;
 }
 
+message CreateBukuRequest {
+    string judulBuku = 1;
+    string penulis = 2;
+    int64 kuantitas = 3;
+    string tempatPenyimpanan = 4;
+}
+
 message BukuIdRequest {
     int64 idBuku = 1;
 }
 
-// Correcting this part
+
 message UpdateBukuRequest {
     int64 idBuku = 1;
-    Buku buku = 2;  // Field name should start with a lowercase letter.
+    Buku buku = 2;  
 }
 
 message DeleteBukuResponse {
@@ -35,5 +42,5 @@ message DeleteBukuResponse {
 }
 
 message BukuList {
-    repeated Buku bukus = 1;  // Field name should start with a lowercase letter.
+    repeated Buku bukus = 1;  
 }

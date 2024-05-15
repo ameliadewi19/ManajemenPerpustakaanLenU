@@ -45,15 +45,23 @@ public class MahasiswaServiceImpl extends MahasiswaServiceGrpc.MahasiswaServiceI
     }
 
     @Override
-    public void createMahasiswa(MahasiswaOuterClass.Mahasiswa request, StreamObserver<MahasiswaOuterClass.Mahasiswa> responseObserver) {
+    public void createMahasiswa(MahasiswaOuterClass.CreateMahasiswaRequest request, StreamObserver<MahasiswaOuterClass.Mahasiswa> responseObserver) {
         try {
-            Mahasiswa newMahasiswa = new Mahasiswa();
-            newMahasiswa.setNamaMahasiswa(request.getNamaMahasiswa());
-            newMahasiswa.setNim(request.getNim());
-            newMahasiswa.setJurusan(request.getJurusan());
+            // Mendapatkan data dari request
+            String namaMahasiswa = request.getNamaMahasiswa();
+            String nim = request.getNim();
+            String jurusan = request.getJurusan();
 
+            // Membuat objek Mahasiswa
+            Mahasiswa newMahasiswa = new Mahasiswa();
+            newMahasiswa.setNamaMahasiswa(namaMahasiswa);
+            newMahasiswa.setNim(nim);
+            newMahasiswa.setJurusan(jurusan);
+
+            // Simpan Mahasiswa ke database menggunakan repositori JPA
             Mahasiswa savedMahasiswa = mahasiswaRepository.save(newMahasiswa);
 
+            // Mengembalikan response berupa Mahasiswa yang telah disimpan
             MahasiswaOuterClass.Mahasiswa grpcMahasiswa = MahasiswaOuterClass.Mahasiswa.newBuilder()
                     .setIdMahasiswa(savedMahasiswa.getIdMahasiswa())
                     .setNamaMahasiswa(savedMahasiswa.getNamaMahasiswa())
@@ -64,6 +72,7 @@ public class MahasiswaServiceImpl extends MahasiswaServiceGrpc.MahasiswaServiceI
             responseObserver.onNext(grpcMahasiswa);
             responseObserver.onCompleted();
         } catch (Exception e) {
+            // Mengirimkan respon error jika terjadi kesalahan
             responseObserver.onError(Status.INTERNAL.withDescription("Internal server error").asRuntimeException());
         }
     }

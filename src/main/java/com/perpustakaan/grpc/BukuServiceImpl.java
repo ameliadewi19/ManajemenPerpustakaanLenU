@@ -23,8 +23,9 @@ public class BukuServiceImpl extends BukuServiceGrpc.BukuServiceImplBase {
     @Override
     public void getAllBuku(Common.Empty request, StreamObserver<BukuOuterClass.BukuList> responseObserver) {
         try {
+        	// mendapatkan semua data buku
             List<Buku> bukuList = bukuRepository.findAll(); 
-
+            
             BukuOuterClass.BukuList.Builder bukuListBuilder = BukuOuterClass.BukuList.newBuilder();
             for (Buku buku : bukuList) {
                 BukuOuterClass.Buku grpcBuku = BukuOuterClass.Buku.newBuilder()
@@ -37,7 +38,8 @@ public class BukuServiceImpl extends BukuServiceGrpc.BukuServiceImplBase {
 
                 bukuListBuilder.addBukus(grpcBuku);
             }
-
+            
+            // mengirim respon
             responseObserver.onNext(bukuListBuilder.build());
             responseObserver.onCompleted();
         } catch (Exception e) {
@@ -46,7 +48,7 @@ public class BukuServiceImpl extends BukuServiceGrpc.BukuServiceImplBase {
     }
 
     @Override
-    public void createBuku(BukuOuterClass.Buku request, StreamObserver<BukuOuterClass.Buku> responseObserver) {
+    public void createBuku(BukuOuterClass.CreateBukuRequest request, StreamObserver<BukuOuterClass.Buku> responseObserver) {
         try {
             Buku newBuku = new Buku();
             newBuku.setJudulBuku(request.getJudulBuku());

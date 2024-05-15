@@ -15,8 +15,7 @@ public class NotifikasiScheduler {
         this.dendaService = dendaService;
     }
 
-    @Scheduled(fixedRate = 5000) // Per 5 detik
-//    @Scheduled(cron = "0 0 7 * * *") // kirim setiap 24 jam sekali, pada jam 7 pagi
+    @Scheduled(cron = "0 0 7 * * *") // kirim setiap 24 jam sekali, pada jam 7 pagi
     public void sendDailyNotifikasi() {
         dendaService.kirimNotifikasi();
     }

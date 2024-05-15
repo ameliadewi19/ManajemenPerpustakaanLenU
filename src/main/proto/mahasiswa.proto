@@ -6,7 +6,7 @@ package com.perpustakaan.proto;
 
 service MahasiswaService {
     rpc GetAllMahasiswa(Empty) returns (MahasiswaList);
-    rpc CreateMahasiswa (Mahasiswa) returns (Mahasiswa);
+    rpc CreateMahasiswa (CreateMahasiswaRequest) returns (Mahasiswa);
     rpc GetMahasiswaById (MahasiswaIdRequest) returns (Mahasiswa);
     rpc UpdateMahasiswa (Mahasiswa) returns (Mahasiswa);
     rpc DeleteMahasiswa (MahasiswaIdRequest) returns (Empty);
@@ -17,6 +17,12 @@ message Mahasiswa {
     string namaMahasiswa = 2;
     string nim = 3;
     string jurusan = 4;
+}
+
+message CreateMahasiswaRequest {
+    string namaMahasiswa = 1;
+    string nim = 2;
+    string jurusan = 3;
 }
 
 message MahasiswaIdRequest {
