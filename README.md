@@ -7,7 +7,7 @@ Ada aturan denda keterlambatan pengembalian dengan ketentuan sebagai berikut:
 buku.
 
 ## Build With
-Projek ini dibangung menggunakan teknologi berikut:
+Projek ini dibangun menggunakan teknologi berikut:
  <ul>
     <li>Java Springboot</li>
     <li>Postgre</li>
@@ -27,23 +27,26 @@ Berikut ini merupakan struktur kode beserta penjelasannya
 {nama_proyek}
  src
    main
-   test
      java
-       model
-         Location.java
-         User.java
-       request
-         EndPoint.java
-         {namaAPI}Endpoint.java
-       testapi
-         {namaAPI}Test.java
+       com
+         perpustakaan
+           configuration
+           exception
+           grpc
+           model
+           repository
+           service
+     proto
      resources
-       user-schema.json
+   test
 ```
 <ul>
+ <li>package configuration berisi pengaturan dari aplikasi, disini digunakan untuk konfigurasi web socket</li>
+ <li>package exception digunakan untuk custom pesan kesalahan</li>
+ <li>package grpc berisi implementasi dari gRPC</li>
  <li>package model berisi class yang digunakan sebagai obejct dari struktur data yang digunakan pada pengujian</li>
- <li>package request berisi pendefinisian url dan mengatur apa saja yang dikirimkan saat melakukan request</li>
- <li>package testapi berisi script test untuk eksekusi test case yang telah dibuat</li>
+ <li>package repository merupakan antarmuka database menggunakan JPA </li>
+ <li>package service berisi logika bisnis dari aplikasi, disini digunakan untuk notifikasi denda keterlambatan</li>
 </ul>
 
 ## Run Projek
@@ -60,8 +63,7 @@ Berikut ini merupakan struktur kode beserta penjelasannya
    mvn spring-boot:run
    ```
 4. Contoh test api menggunakan BloomRPC
-   ![image](https://github.com/ameliadewi19/ManajemenPerpustakaanLenU/assets/95133748/40a82ee7-0356-4a16-bc72-ceb8d1059ff9)
-
+   ![image](https://github.com/ameliadewi19/ManajemenPerpustakaanLenU/assets/95133748/3c2aff83-0382-45d0-a153-8cfbfccfae56)
 
 ## API gRPC
 Berikut ini merupakan list api yang tersedia:
