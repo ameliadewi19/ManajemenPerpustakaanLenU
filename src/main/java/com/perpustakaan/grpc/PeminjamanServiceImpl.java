@@ -11,6 +11,10 @@ import com.perpustakaan.repository.MahasiswaRepository;
 import com.perpustakaan.repository.PeminjamanRepository;
 import com.perpustakaan.proto.PeminjamanOuterClass;
 import com.perpustakaan.proto.PeminjamanServiceGrpc;
+import com.perpustakaan.proto.BukuOuterClass;
+import com.perpustakaan.proto.BukuServiceGrpc;
+import com.perpustakaan.proto.MahasiswaOuterClass;
+import com.perpustakaan.proto.MahasiswaServiceGrpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.perpustakaan.proto.Common;
@@ -60,31 +64,50 @@ public class PeminjamanServiceImpl extends PeminjamanServiceGrpc.PeminjamanServi
     @Override
     public void createPeminjaman(PeminjamanOuterClass.CreatePeminjamanRequest request, StreamObserver<PeminjamanOuterClass.Peminjaman> responseObserver) {
         try {
-        	Buku buku = bukuRepository.findById(request.getIdBuku())
-                    .orElseThrow(() -> new ResourceNotFoundException("Buku not found with ID: " + request.getIdBuku()));
-
-            Mahasiswa mahasiswa = mahasiswaRepository.findById(request.getIdMahasiswa())
-                    .orElseThrow(() -> new ResourceNotFoundException("Mahasiswa not found with ID: " + request.getIdMahasiswa()));
-
-            Peminjaman newPeminjaman = new Peminjaman();
-            newPeminjaman.setBuku(buku);
-            newPeminjaman.setMahasiswa(mahasiswa);
-            newPeminjaman.setTanggalPeminjaman(LocalDate.parse(request.getTanggalPeminjaman()));
-            newPeminjaman.setBatasPeminjaman(LocalDate.parse(request.getBatasPeminjaman()));
-
-            Peminjaman savedPeminjaman = peminjamanRepository.save(newPeminjaman);
-
-            PeminjamanOuterClass.Peminjaman grpcPeminjaman = PeminjamanOuterClass.Peminjaman.newBuilder()
-                    .setIdPeminjaman(savedPeminjaman.getIdPeminjaman())
-                    .setIdBuku(savedPeminjaman.getBuku().getIdBuku())
-                    .setIdMahasiswa(savedPeminjaman.getMahasiswa().getIdMahasiswa())
-                    .setTanggalPeminjaman(savedPeminjaman.getTanggalPeminjaman().toString())
-                    .setBatasPeminjaman(savedPeminjaman.getBatasPeminjaman().toString())
-                    .setTanggalPengembalian(savedPeminjaman.getTanggalPengembalian() != null ? savedPeminjaman.getTanggalPengembalian().toString() : "")
-                    .build();
-
-            responseObserver.onNext(grpcPeminjaman);
-            responseObserver.onCompleted();
+        	// memeriksa jumlah peminjaman mahasiswa dalam satu bulan
+        	long idMahasiswa = request.getIdMahasiswa();
+        	int jumlahPeminjamanMahasiswa = peminjamanRepository.countByMahasiswaIdAndBulanPeminjaman(idMahasiswa, LocalDate.parse(request.getTanggalPeminjaman()).getMonthValue());
+        	
+        	// cek apakah mahasiswa sudah meminjam lebih dari 10 kali dalam satu bulan
+        	if (jumlahPeminjamanMahasiswa>10) {
+        		responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("Jumlah peminjaman pada bulan yang sama sudah melebihi batas").asRuntimeException());
+        	} else {
+	        	// memeriksa stok kesediaan buku
+	            long idBuku = request.getIdBuku();
+	            Buku buku = bukuRepository.findById(idBuku).orElse(null);
+	
+	            // jika stok tersedia maka dapat meminjam
+	            if (buku != null && buku.getKuantitas() > 0) {
+	                buku.setKuantitas(buku.getKuantitas() - 1);
+	                bukuRepository.save(buku);
+	
+	                Peminjaman newPeminjaman = new Peminjaman();
+	                
+	                Mahasiswa mahasiswaMeminjam = new Mahasiswa();
+	                
+	                mahasiswaMeminjam.setIdMahasiswa(request.getIdMahasiswa());
+	                newPeminjaman.setBuku(buku);
+	                newPeminjaman.setMahasiswa(mahasiswaMeminjam);
+	                newPeminjaman.setTanggalPeminjaman(LocalDate.parse(request.getTanggalPeminjaman()));
+	                newPeminjaman.setBatasPeminjaman(LocalDate.parse(request.getBatasPeminjaman()));
+	
+	                Peminjaman savedPeminjaman = peminjamanRepository.save(newPeminjaman);
+	
+	                PeminjamanOuterClass.Peminjaman grpcPeminjaman = PeminjamanOuterClass.Peminjaman.newBuilder()
+	                        .setIdPeminjaman(savedPeminjaman.getIdPeminjaman())
+	                        .setIdBuku(savedPeminjaman.getBuku().getIdBuku())
+	                        .setIdMahasiswa(savedPeminjaman.getMahasiswa().getIdMahasiswa())
+	                        .setTanggalPeminjaman(savedPeminjaman.getTanggalPeminjaman().toString())
+	                        .setBatasPeminjaman(savedPeminjaman.getBatasPeminjaman().toString())
+	                        .build();
+	
+	                responseObserver.onNext(grpcPeminjaman);
+	                responseObserver.onCompleted();
+	            } else {
+	                // Kirim pesan kesalahan bahwa stok buku tidak mencukupi
+	                responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("Stok buku tidak mencukupi").asRuntimeException());
+	            }
+        	}
         } catch (Exception e) {
             responseObserver.onError(Status.INTERNAL.withDescription("Internal server error").asRuntimeException());
         }

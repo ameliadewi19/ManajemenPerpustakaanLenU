@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "common.proto";
+
+package com.perpustakaan.proto;
+
+service PengembalianService {
+    rpc CreatePengembalian (CreatePengembalianRequest) returns (Pengembalian);
+}
+
+message Pengembalian {
+    int64 idPeminjaman = 1;
+    string tanggalPengembalian = 2; // Format: YYYY-MM-DD
+}
+
+message CreatePengembalianRequest {
+    int64 idPeminjaman = 1;
+    string tanggalPengembalian = 2; // Format: YYYY-MM-DD
+}
+
