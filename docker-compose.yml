@@ -9,7 +9,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/perpustakaan
       - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=123
+      - SPRING_DATASOURCE_PASSWORD=12345
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - GRPC_SERVER_PORT=9090
     depends_on:
@@ -20,6 +20,6 @@ services:
     environment:
       POSTGRES_DB: perpustakaan
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123
+      POSTGRES_PASSWORD: 12345
     ports:
       - "5432:5432"
