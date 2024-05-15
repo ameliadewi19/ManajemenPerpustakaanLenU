@@ -15,6 +15,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+/*
+ * PIC : Amelia Dewi Agustiani
+ * Tanggal_Dibuat : 15/05/2024
+ * Tujuan : Class ini berfungsi sebagai implementasi dari gRPC untuk data Mahasiswa
+ */
 public class MahasiswaServiceImpl extends MahasiswaServiceGrpc.MahasiswaServiceImplBase {
 
     @Autowired

@@ -7,6 +7,11 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
+/*
+ * PIC : Amelia Dewi Agustiani
+ * Tanggal_Dibuat : 15/05/2024
+ * Tujuan : Class ini berfungsi sebagai scheduler untuk mengirim notifikasi denda
+ */
 public class NotifikasiScheduler {
 
     private final DendaService dendaService;

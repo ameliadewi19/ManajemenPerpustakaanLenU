@@ -14,6 +14,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
+/*
+ * PIC : Amelia Dewi Agustiani
+ * Tanggal_Dibuat : 15/05/2024
+ * Tujuan : Class ini merupakan class main 
+ */
 public class DemoApplication implements CommandLineRunner {
 
     @Autowired

@@ -17,6 +17,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 
 @Service
+/*
+ * PIC : Amelia Dewi Agustiani
+ * Tanggal_Dibuat : 15/05/2024
+ * Tujuan : Class ini berfungsi sebagai implementasi dari gRPC untuk data Peminjaman pada proses Pengembalian
+ */
 public class PengembalianServiceImpl extends PengembalianServiceGrpc.PengembalianServiceImplBase {
 
     @Autowired

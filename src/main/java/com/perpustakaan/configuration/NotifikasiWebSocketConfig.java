@@ -8,6 +8,11 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
+/*
+ * PIC : Amelia Dewi Agustiani
+ * Tanggal_Dibuat : 15/05/2024
+ * Tujuan : Class ini berfungsi sebagai konfigurasi dari web socket
+ */
 public class NotifikasiWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override

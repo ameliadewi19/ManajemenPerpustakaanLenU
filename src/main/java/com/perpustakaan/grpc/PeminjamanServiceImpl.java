@@ -24,6 +24,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+/*
+ * PIC : Amelia Dewi Agustiani
+ * Tanggal_Dibuat : 15/05/2024
+ * Tujuan : Class ini berfungsi sebagai implementasi dari gRPC untuk data Peminjaman
+ */
 public class PeminjamanServiceImpl extends PeminjamanServiceGrpc.PeminjamanServiceImplBase {
 
     @Autowired

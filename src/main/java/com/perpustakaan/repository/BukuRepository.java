@@ -6,6 +6,11 @@ import org.springframework.stereotype.Repository;
 import com.perpustakaan.model.Buku;
 
 @Repository
+/*
+ * PIC : Amelia Dewi Agustiani
+ * Tanggal_Dibuat : 15/05/2024
+ * Tujuan : Class ini berfungsi sebagai repository menggunakan JPA untuk data Buku
+ */
 public interface BukuRepository extends JpaRepository<Buku, Long> {
-    // You can add custom query methods here if needed
+    
 }

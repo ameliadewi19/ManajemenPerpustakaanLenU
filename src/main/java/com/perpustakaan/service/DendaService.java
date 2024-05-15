@@ -14,6 +14,11 @@ import com.perpustakaan.model.Peminjaman;
 import com.perpustakaan.repository.PeminjamanRepository;
 
 @Service
+/*
+ * PIC : Amelia Dewi Agustiani
+ * Tanggal_Dibuat : 15/05/2024
+ * Tujuan : Class ini berfungsi sebagai logic dari proses denda
+ */
 public class DendaService {
 
     @Autowired

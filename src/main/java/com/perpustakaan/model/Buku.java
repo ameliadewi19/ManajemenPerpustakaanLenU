@@ -5,6 +5,11 @@ import java.util.List;
 
 @Entity
 @Table(name = "buku")
+/*
+ * PIC : Amelia Dewi Agustiani
+ * Tanggal_Dibuat : 15/05/2024
+ * Tujuan : Class ini berfungsi sebagai objek untuk data Buku
+ */
 public class Buku {
 	
 	@Id

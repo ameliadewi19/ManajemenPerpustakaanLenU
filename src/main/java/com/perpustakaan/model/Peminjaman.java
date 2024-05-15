@@ -5,6 +5,11 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "peminjaman")
+/*
+ * PIC : Amelia Dewi Agustiani
+ * Tanggal_Dibuat : 15/05/2024
+ * Tujuan : Class ini berfungsi sebagai objek untuk data Peminjaman
+ */
 public class Peminjaman {
 
     @Id

@@ -6,6 +6,11 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "mahasiswa")
+/*
+ * PIC : Amelia Dewi Agustiani
+ * Tanggal_Dibuat : 15/05/2024
+ * Tujuan : Class ini berfungsi sebagai objek untuk data Mahasiswa
+ */
 public class Mahasiswa {
 	
 	@Id
