@@ -1,24 +1,15 @@
-# Gunakan image dasar dari Eclipse Temurin dengan JDK 17
-FROM eclipse-temurin:17-jdk-alpine
+# Menggunakan parent image
+FROM openjdk:17
 
-# Tentukan working directory di dalam container
+# setting workspace directory
 WORKDIR /app
 
-# Copy file pom.xml, Maven Wrapper, dan source code ke dalam container
-COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
-COPY src ./src
+# Menyalin jar file ke container
+COPY target/perpustakaan-0.0.1-SNAPSHOT.jar app.jar
 
-# Berikan izin eksekusi untuk Maven Wrapper
-RUN chmod +x ./mvnw
+# Setting port
+EXPOSE 9090
+EXPOSE 9091
 
-# Download dependencies, compile dan package aplikasi
-RUN ./mvnw dependency:resolve
-RUN ./mvnw clean package -DskipTests
-
-# Copy file jar dari target folder ke dalam container
-COPY target/*.jar app.jar
-
-# Tentukan command untuk menjalankan aplikasi
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+# Menjalankan jar file
+ENTRYPOINT ["java", "-jar", "app.jar"]

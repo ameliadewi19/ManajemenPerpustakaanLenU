@@ -1,14 +1,17 @@
 version: '3.8'
 
 services:
-  app:
+  perpustakaan:
     build: .
     ports:
-      - "8080:8080"
+      - "9090:9090"
+      - "9091:9091"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/your_database_name
-      SPRING_DATASOURCE_USERNAME: your_database_username
-      SPRING_DATASOURCE_PASSWORD: your_database_password
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/perpustakaan
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - GRPC_SERVER_PORT=9090
     depends_on:
       - db
 
@@ -17,6 +20,6 @@ services:
     environment:
       POSTGRES_DB: perpustakaan
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 12345
+      POSTGRES_PASSWORD: 123
     ports:
-      - "54320:54320"
+      - "5432:5432"
