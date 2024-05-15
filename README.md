@@ -54,15 +54,22 @@ Berikut ini merupakan struktur kode beserta penjelasannya
    ```
    git clone https://github.com/ameliadewi19/ManajemenPerpustakaanLenU
    ```
-2. Jalankan perintah berikut untuk menginstall artifak yang didefinisikan
+2. Setting configurasi pada application.properties untuk koneksi ke database
+   ```
+   spring.datasource.url=jdbc:postgresql://localhost:5432/your_database_name
+   spring.datasource.username=your_username
+   spring.datasource.password=your_password
+   spring.datasource.driver-class-name=org.postgresql.Driver
+   ```
+4. Jalankan perintah berikut untuk menginstall artifak yang didefinisikan
    ```
    mvn clean install
    ```
-3. Jalankan perintah berikut untuk menjalankan projek
+5. Jalankan perintah berikut untuk menjalankan projek
    ```
    mvn spring-boot:run
    ```
-4. Contoh test api menggunakan BloomRPC
+6. Contoh test api menggunakan BloomRPC
    ![image](https://github.com/ameliadewi19/ManajemenPerpustakaanLenU/assets/95133748/3c2aff83-0382-45d0-a153-8cfbfccfae56)
 
 ## API gRPC
