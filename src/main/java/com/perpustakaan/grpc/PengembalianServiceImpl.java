@@ -1,6 +1,7 @@
 package com.perpustakaan.grpc;
 
 import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import com.perpustakaan.exception.ResourceNotFoundException;
 import com.perpustakaan.model.Buku;
@@ -32,16 +33,23 @@ public class PengembalianServiceImpl extends PengembalianServiceGrpc.Pengembalia
 
             // Temukan peminjaman berdasarkan ID
             Peminjaman peminjaman = peminjamanRepository.findById(idPeminjaman)
-                    .orElseThrow(() -> new ResourceNotFoundException("Peminjaman not found with ID: " + idPeminjaman));
+                    .orElseThrow(() -> new ResourceNotFoundException("Tidak ada peminjaman dengan ID: " + idPeminjaman));
 
             // Periksa apakah peminjaman sudah dikembalikan sebelumnya
             if (peminjaman.getTanggalPengembalian() != null) {
                 responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("Peminjaman sudah dikembalikan").asRuntimeException());
             } else {
-                // Set tanggal pengembalian dengan tanggal saat ini
-                peminjaman.setTanggalPengembalian(LocalDate.now());
+                // Set tanggal pengembalian dengan tanggal yang diinputkan
+                LocalDate tanggalPengembalian = LocalDate.parse(request.getTanggalPengembalian());
 
+                // Validasi tanggal pengembalian tidak boleh sebelum tanggal peminjaman
+                LocalDate tanggalPeminjaman = peminjaman.getTanggalPeminjaman();
+                if (tanggalPengembalian.isBefore(tanggalPeminjaman)) {
+                    responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("Tanggal pengembalian tidak valid").asRuntimeException());
+                    return;
+                }
                 // Update status peminjaman di repository
+                peminjaman.setTanggalPengembalian(tanggalPengembalian);
                 peminjamanRepository.save(peminjaman);
 
                 // Kembalikan satu unit buku ke stok
@@ -52,13 +60,15 @@ public class PengembalianServiceImpl extends PengembalianServiceGrpc.Pengembalia
                 // Kirim respon berhasil
                 PengembalianOuterClass.Pengembalian pengembalianResponse = PengembalianOuterClass.Pengembalian.newBuilder()
                         .setIdPeminjaman(peminjaman.getIdPeminjaman())
-                        .setTanggalPengembalian(LocalDate.now().toString())
+                        .setTanggalPengembalian(tanggalPengembalian.toString())
                         .build();
                 responseObserver.onNext(pengembalianResponse);
                 responseObserver.onCompleted();
             }
         } catch (ResourceNotFoundException e) {
             responseObserver.onError(Status.NOT_FOUND.withDescription(e.getMessage()).asRuntimeException());
+        } catch (StatusRuntimeException e) {
+            responseObserver.onError(e);
         } catch (Exception e) {
             responseObserver.onError(Status.INTERNAL.withDescription("Internal server error").asRuntimeException());
         }
