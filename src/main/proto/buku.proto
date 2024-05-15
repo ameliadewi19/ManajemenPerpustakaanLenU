@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+import "common.proto";
+
+package com.perpustakaan.proto;
+
+service BukuService {
+    rpc GetAllBuku(Empty) returns (BukuList);
+    rpc CreateBuku (Buku) returns (Buku);
+    rpc GetBukuById (BukuIdRequest) returns (Buku);
+    rpc UpdateBuku (Buku) returns (Buku);
+    rpc DeleteBuku (BukuIdRequest) returns (Empty);
+}
+
+message Buku {
+    int64 idBuku = 1;
+    string judulBuku = 2;
+    string penulis = 3;
+    int64 kuantitas = 4;
+    string tempatPenyimpanan = 5;
+}
+
+message BukuIdRequest {
+    int64 idBuku = 1;
+}
+
+// Correcting this part
+message UpdateBukuRequest {
+    int64 idBuku = 1;
+    Buku buku = 2;  // Field name should start with a lowercase letter.
+}
+
+message DeleteBukuResponse {
+    bool deleted = 1;
+}
+
+message BukuList {
+    repeated Buku bukus = 1;  // Field name should start with a lowercase letter.
+}

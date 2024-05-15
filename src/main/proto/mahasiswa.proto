@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+import "common.proto";
+
+package com.perpustakaan.proto;
+
+service MahasiswaService {
+    rpc GetAllMahasiswa(Empty) returns (MahasiswaList);
+    rpc CreateMahasiswa (Mahasiswa) returns (Mahasiswa);
+    rpc GetMahasiswaById (MahasiswaIdRequest) returns (Mahasiswa);
+    rpc UpdateMahasiswa (Mahasiswa) returns (Mahasiswa);
+    rpc DeleteMahasiswa (MahasiswaIdRequest) returns (Empty);
+}
+
+message Mahasiswa {
+    int64 idMahasiswa = 1;
+    string namaMahasiswa = 2;
+    string nim = 3;
+    string jurusan = 4;
+}
+
+message MahasiswaIdRequest {
+    int64 idMahasiswa = 1;
+}
+
+message UpdateMahasiswaRequest {
+  int64 idMahasiswa = 1;
+  Mahasiswa mahasiswa = 2;
+}
+
+message DeleteMahasiswaResponse {
+  bool deleted = 1;
+}
+
+message MahasiswaList {
+    repeated Mahasiswa Mahasiswas = 1;
+}

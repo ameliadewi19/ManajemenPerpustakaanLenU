@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+import "common.proto";
+
+package com.perpustakaan.proto;
+
+service PeminjamanService {
+    rpc GetAllPeminjaman (Empty) returns (PeminjamanList);
+    rpc CreatePeminjaman (CreatePeminjamanRequest) returns (Peminjaman);
+    rpc GetPeminjamanById (PeminjamanIdRequest) returns (Peminjaman);
+    rpc UpdatePeminjaman (Peminjaman) returns (Peminjaman);
+    rpc DeletePeminjaman (PeminjamanIdRequest) returns (Empty);
+}
+
+message Peminjaman {
+    int64 idPeminjaman = 1;
+    int64 idBuku = 2;
+    int64 idMahasiswa = 3;
+    string tanggalPeminjaman = 4; // Format: YYYY-MM-DD
+    string batasPeminjaman = 5; // Format: YYYY-MM-DD
+    string tanggalPengembalian = 6; // Format: YYYY-MM-DD
+}
+
+message CreatePeminjamanRequest {
+    int64 idBuku = 1;
+    int64 idMahasiswa = 2;
+    string tanggalPeminjaman = 3; // Format: YYYY-MM-DD
+    string batasPeminjaman = 4; // Format: YYYY-MM-DD
+}
+
+message PeminjamanIdRequest {
+    int64 idPeminjaman = 1;
+}
+
+message PeminjamanList {
+    repeated Peminjaman peminjamans = 1;
+}
