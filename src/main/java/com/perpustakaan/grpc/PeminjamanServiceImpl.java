@@ -42,10 +42,25 @@ public class PeminjamanServiceImpl extends PeminjamanServiceGrpc.PeminjamanServi
 
             PeminjamanOuterClass.PeminjamanList.Builder peminjamanListBuilder = PeminjamanOuterClass.PeminjamanList.newBuilder();
             for (Peminjaman peminjaman : peminjamanList) {
+                BukuOuterClass.Buku grpcBuku = BukuOuterClass.Buku.newBuilder()
+                        .setIdBuku(peminjaman.getBuku().getIdBuku())
+                        .setJudulBuku(peminjaman.getBuku().getJudulBuku())
+                        .setPenulis(peminjaman.getBuku().getPenulis())
+                        .setKuantitas(peminjaman.getBuku().getKuantitas())
+                        .setTempatPenyimpanan(peminjaman.getBuku().getTempatPenyimpanan())
+                        .build();
+
+                MahasiswaOuterClass.Mahasiswa grpcMahasiswa = MahasiswaOuterClass.Mahasiswa.newBuilder()
+                        .setIdMahasiswa(peminjaman.getMahasiswa().getIdMahasiswa())
+                        .setNamaMahasiswa(peminjaman.getMahasiswa().getNamaMahasiswa())
+                        .setNim(peminjaman.getMahasiswa().getNim())
+                        .setJurusan(peminjaman.getMahasiswa().getJurusan())
+                        .build();
+
                 PeminjamanOuterClass.Peminjaman grpcPeminjaman = PeminjamanOuterClass.Peminjaman.newBuilder()
                         .setIdPeminjaman(peminjaman.getIdPeminjaman())
-                        .setIdBuku(peminjaman.getBuku().getIdBuku())
-                        .setIdMahasiswa(peminjaman.getMahasiswa().getIdMahasiswa())
+                        .setBuku(grpcBuku)
+                        .setMahasiswa(grpcMahasiswa)
                         .setTanggalPeminjaman(peminjaman.getTanggalPeminjaman().toString())
                         .setBatasPeminjaman(peminjaman.getBatasPeminjaman().toString())
                         .setTanggalPengembalian(peminjaman.getTanggalPengembalian() != null ? peminjaman.getTanggalPengembalian().toString() : "")
@@ -60,6 +75,7 @@ public class PeminjamanServiceImpl extends PeminjamanServiceGrpc.PeminjamanServi
             responseObserver.onError(Status.INTERNAL.withDescription("Internal server error").asRuntimeException());
         }
     }
+
 
     @Override
     public void createPeminjaman(PeminjamanOuterClass.CreatePeminjamanRequest request, StreamObserver<PeminjamanOuterClass.Peminjaman> responseObserver) {
@@ -94,12 +110,13 @@ public class PeminjamanServiceImpl extends PeminjamanServiceGrpc.PeminjamanServi
 	                Peminjaman savedPeminjaman = peminjamanRepository.save(newPeminjaman);
 	
 	                PeminjamanOuterClass.Peminjaman grpcPeminjaman = PeminjamanOuterClass.Peminjaman.newBuilder()
-	                        .setIdPeminjaman(savedPeminjaman.getIdPeminjaman())
-	                        .setIdBuku(savedPeminjaman.getBuku().getIdBuku())
-	                        .setIdMahasiswa(savedPeminjaman.getMahasiswa().getIdMahasiswa())
-	                        .setTanggalPeminjaman(savedPeminjaman.getTanggalPeminjaman().toString())
-	                        .setBatasPeminjaman(savedPeminjaman.getBatasPeminjaman().toString())
-	                        .build();
+	                	    .setIdPeminjaman(savedPeminjaman.getIdPeminjaman())
+	                	    .setBuku(BukuOuterClass.Buku.newBuilder().setIdBuku(savedPeminjaman.getBuku().getIdBuku()).build())
+	                	    .setMahasiswa(MahasiswaOuterClass.Mahasiswa.newBuilder().setIdMahasiswa(savedPeminjaman.getMahasiswa().getIdMahasiswa()).build())
+	                	    .setTanggalPeminjaman(savedPeminjaman.getTanggalPeminjaman().toString())
+	                	    .setBatasPeminjaman(savedPeminjaman.getBatasPeminjaman().toString())
+	                	    .setTanggalPengembalian(savedPeminjaman.getTanggalPengembalian() != null ? savedPeminjaman.getTanggalPengembalian().toString() : "")
+	                	    .build();
 	
 	                responseObserver.onNext(grpcPeminjaman);
 	                responseObserver.onCompleted();
@@ -121,10 +138,25 @@ public class PeminjamanServiceImpl extends PeminjamanServiceGrpc.PeminjamanServi
             Peminjaman peminjaman = peminjamanRepository.findById(idPeminjaman)
                     .orElseThrow(() -> new ResourceNotFoundException("Peminjaman not found with ID: " + idPeminjaman));
 
+            BukuOuterClass.Buku grpcBuku = BukuOuterClass.Buku.newBuilder()
+                    .setIdBuku(peminjaman.getBuku().getIdBuku())
+                    .setJudulBuku(peminjaman.getBuku().getJudulBuku())
+                    .setPenulis(peminjaman.getBuku().getPenulis())
+                    .setKuantitas(peminjaman.getBuku().getKuantitas())
+                    .setTempatPenyimpanan(peminjaman.getBuku().getTempatPenyimpanan())
+                    .build();
+
+            MahasiswaOuterClass.Mahasiswa grpcMahasiswa = MahasiswaOuterClass.Mahasiswa.newBuilder()
+                    .setIdMahasiswa(peminjaman.getMahasiswa().getIdMahasiswa())
+                    .setNamaMahasiswa(peminjaman.getMahasiswa().getNamaMahasiswa())
+                    .setNim(peminjaman.getMahasiswa().getNim())
+                    .setJurusan(peminjaman.getMahasiswa().getJurusan())
+                    .build();
+
             PeminjamanOuterClass.Peminjaman grpcPeminjaman = PeminjamanOuterClass.Peminjaman.newBuilder()
                     .setIdPeminjaman(peminjaman.getIdPeminjaman())
-                    .setIdBuku(peminjaman.getBuku().getIdBuku())
-                    .setIdMahasiswa(peminjaman.getMahasiswa().getIdMahasiswa())
+                    .setBuku(grpcBuku)
+                    .setMahasiswa(grpcMahasiswa)
                     .setTanggalPeminjaman(peminjaman.getTanggalPeminjaman().toString())
                     .setBatasPeminjaman(peminjaman.getBatasPeminjaman().toString())
                     .setTanggalPengembalian(peminjaman.getTanggalPengembalian() != null ? peminjaman.getTanggalPengembalian().toString() : "")
@@ -139,14 +171,15 @@ public class PeminjamanServiceImpl extends PeminjamanServiceGrpc.PeminjamanServi
         }
     }
 
+
     @Override
     public void updatePeminjaman(PeminjamanOuterClass.Peminjaman request, StreamObserver<PeminjamanOuterClass.Peminjaman> responseObserver) {
         try {
-        	Buku buku = bukuRepository.findById(request.getIdBuku())
-                    .orElseThrow(() -> new ResourceNotFoundException("Buku not found with ID: " + request.getIdBuku()));
+            Buku buku = bukuRepository.findById(request.getBuku().getIdBuku())
+                    .orElseThrow(() -> new ResourceNotFoundException("Buku not found with ID: " + request.getBuku().getIdBuku()));
 
-            Mahasiswa mahasiswa = mahasiswaRepository.findById(request.getIdMahasiswa())
-                    .orElseThrow(() -> new ResourceNotFoundException("Mahasiswa not found with ID: " + request.getIdMahasiswa()));
+            Mahasiswa mahasiswa = mahasiswaRepository.findById(request.getMahasiswa().getIdMahasiswa())
+                    .orElseThrow(() -> new ResourceNotFoundException("Mahasiswa not found with ID: " + request.getMahasiswa().getIdMahasiswa()));
 
             Peminjaman existingPeminjaman = peminjamanRepository.findById(request.getIdPeminjaman())
                     .orElseThrow(() -> new IllegalArgumentException("Peminjaman not found with id: " + request.getIdPeminjaman()));
@@ -164,8 +197,8 @@ public class PeminjamanServiceImpl extends PeminjamanServiceGrpc.PeminjamanServi
 
             PeminjamanOuterClass.Peminjaman grpcPeminjaman = PeminjamanOuterClass.Peminjaman.newBuilder()
                     .setIdPeminjaman(updatedPeminjaman.getIdPeminjaman())
-                    .setIdBuku(updatedPeminjaman.getBuku().getIdBuku())
-                    .setIdMahasiswa(updatedPeminjaman.getMahasiswa().getIdMahasiswa())
+                    .setBuku(request.getBuku())
+                    .setMahasiswa(request.getMahasiswa())
                     .setTanggalPeminjaman(updatedPeminjaman.getTanggalPeminjaman().toString())
                     .setBatasPeminjaman(updatedPeminjaman.getBatasPeminjaman().toString())
                     .setTanggalPengembalian(updatedPeminjaman.getTanggalPengembalian() != null ? updatedPeminjaman.getTanggalPengembalian().toString() : "")
@@ -182,6 +215,7 @@ public class PeminjamanServiceImpl extends PeminjamanServiceGrpc.PeminjamanServi
             responseObserver.onError(Status.INTERNAL.withDescription("Internal server error: " + e.getMessage()).asRuntimeException());
         }
     }
+
 
     @Override
     public void deletePeminjaman(PeminjamanOuterClass.PeminjamanIdRequest request, StreamObserver<Common.Empty> responseObserver) {
